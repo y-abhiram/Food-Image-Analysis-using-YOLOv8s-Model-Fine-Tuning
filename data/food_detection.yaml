@@ -1,0 +1,16 @@
+path: datasets/food_multi_filtered
+train: train/images
+val: valid/images
+test: test/images
+
+names:
+  0: boiled egg
+  1: idly
+  2: medu vadai
+  3: nei satham
+  4: paal kolukattai
+  5: pidi kolukattai
+  6: poorna kolukattai
+  7: puthina chutney
+  8: rice
+  9: roti

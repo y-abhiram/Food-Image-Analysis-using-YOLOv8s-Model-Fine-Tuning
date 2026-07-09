@@ -1,0 +1,46 @@
+{
+  "image": "samples/sample_meal.png",
+  "message": "Food items detected.",
+  "items": [
+    {
+      "label": "rice",
+      "confidence": 0.91,
+      "box": {
+        "x1": 130.0,
+        "y1": 180.0,
+        "x2": 310.0,
+        "y2": 310.0
+      },
+      "estimated_portion_factor": 0.5,
+      "nutrition": {
+        "calories": 102.5,
+        "protein_g": 2.15,
+        "carbs_g": 22.25,
+        "fat_g": 0.2
+      }
+    },
+    {
+      "label": "apple",
+      "confidence": 0.88,
+      "box": {
+        "x1": 350.0,
+        "y1": 120.0,
+        "x2": 500.0,
+        "y2": 270.0
+      },
+      "estimated_portion_factor": 0.5,
+      "nutrition": {
+        "calories": 47.5,
+        "protein_g": 0.25,
+        "carbs_g": 12.5,
+        "fat_g": 0.15
+      }
+    }
+  ],
+  "total_nutrition": {
+    "calories": 150.0,
+    "protein_g": 2.4,
+    "carbs_g": 34.75,
+    "fat_g": 0.35
+  }
+}

@@ -1,0 +1,13 @@
+README.md
+pyproject.toml
+src/food_analysis/__init__.py
+src/food_analysis/analyzer.py
+src/food_analysis/cli.py
+src/food_analysis/nutrition.py
+src/food_analysis/schemas.py
+src/food_image_analysis.egg-info/PKG-INFO
+src/food_image_analysis.egg-info/SOURCES.txt
+src/food_image_analysis.egg-info/dependency_links.txt
+src/food_image_analysis.egg-info/entry_points.txt
+src/food_image_analysis.egg-info/requires.txt
+src/food_image_analysis.egg-info/top_level.txt
