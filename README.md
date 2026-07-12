@@ -6,7 +6,12 @@ This is my Python submission for the food image analysis assignment. The app tak
 
 Food detection with nutrition table:
 
-<img src="outputs/real_multi_food_sample_annotated.png" alt="Detected food items with bounding boxes" width="650">
+<img src="outputs/Screenshot from 2026-07-08 21-21-15.png" alt="Detected food items with bounding boxes" width="650">
+
+<img src="outputs/Screenshot from 2026-07-08 21-22-26.png" alt="Detected food items with bounding boxes" width="650">
+
+<img src="outputs/Screenshot from 2026-07-08 21-25-09.png" alt="Detected food items with bounding boxes" width="650">
+<img src="outputs/Screenshot from 2026-07-08 21-24-42.png" alt="Detected food items with bounding boxes" width="650">
 
 Another tested output:
 
