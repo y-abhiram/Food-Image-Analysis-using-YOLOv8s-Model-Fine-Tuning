@@ -1,0 +1,37 @@
+path: datasets/food_multi_all
+train: train/images
+val: valid/images
+test: test/images
+
+names:
+  0: appam
+  1: beetroot poriyal
+  2: boiled egg
+  3: carrot poriyal
+  4: chicken
+  5: chilly
+  6: chutney
+  7: dal
+  8: dosa
+  9: greenpeas
+  10: idly
+  11: kaara chutney
+  12: lemon satham
+  13: medu vadai
+  14: nandu masala
+  15: nei satham
+  16: noodles
+  17: paal kolukattai
+  18: paneer masala
+  19: parupu vadai
+  20: pidi kolukattai
+  21: poorna kolukattai
+  22: prawn thokku
+  23: puthina chutney
+  24: rice
+  25: roti
+  26: sambar
+  27: sambar curry
+  28: tea
+  29: thengai chutney
+  30: ven pongal
