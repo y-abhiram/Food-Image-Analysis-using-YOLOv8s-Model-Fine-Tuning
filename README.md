@@ -2,6 +2,43 @@
 
 This is my Python submission for the food image analysis assignment. The app takes an image, detects food items with a fine-tuned YOLO model, and gives approximate nutrition for each detected item and for the full meal.
 
+## Sample Outputs
+
+Food detection with nutrition table:
+
+<img src="outputs/real_multi_food_sample_annotated.png" alt="Detected food items with bounding boxes" width="650">
+
+Another tested output:
+
+<img src="outputs/all_classes_test_annotated.png" alt="Food detection test output" width="650">
+
+Empty plate / no food handling:
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-48-30.png" alt="Empty plate no food detected test" width="650">
+
+More tested screenshots:
+
+<details>
+<summary>Click to view output screenshots</summary>
+
+<br>
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-21-15.png" alt="Streamlit output screenshot 1" width="650">
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-21-34.png" alt="Streamlit output screenshot 2" width="650">
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-22-26.png" alt="Streamlit output screenshot 3" width="650">
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-24-12.png" alt="Streamlit output screenshot 4" width="650">
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-24-42.png" alt="Streamlit output screenshot 5" width="650">
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-25-09.png" alt="Streamlit output screenshot 6" width="650">
+
+<img src="outputs/Screenshot%20from%202026-07-08%2021-26-27.png" alt="Streamlit output screenshot 7" width="650">
+
+</details>
+
 ## What It Does
 
 - accepts `.jpg`, `.jpeg`, and `.png`
@@ -10,6 +47,38 @@ This is my Python submission for the food image analysis assignment. The app tak
 - calculates total nutrition
 - returns `No food items detected.` when nothing is detected
 - supports both CLI and Streamlit upload UI
+
+## Architecture
+
+The project has two main flows: training/fine-tuning and inference.
+
+```mermaid
+flowchart TD
+    A[Roboflow food detection dataset] --> B[Download in YOLO format]
+    B --> C[Dataset cleaning script]
+    C --> D[Clean YOLO dataset: food_multi_filtered]
+    D --> E[YOLOv8s pretrained model]
+    E --> F[Fine-tune for 100 epochs]
+    F --> G[Best checkpoint: best.pt]
+    G --> H[CLI / Streamlit app]
+    H --> I[Uploaded food image]
+    I --> J[Food detections: class, box, confidence]
+    J --> K[Nutrition CSV lookup]
+    K --> L[Per-item nutrition and total meal nutrition]
+    J --> M[Annotated output image]
+```
+
+Inference flow:
+
+```text
+input image
+  -> YOLOv8s fine-tuned detector
+  -> food class + bounding box + confidence
+  -> nutrition.csv lookup
+  -> item-wise nutrition table
+  -> total nutrition
+  -> annotated image output
+```
 
 ## Model
 
@@ -38,6 +107,23 @@ mAP50:     0.751
 mAP50-95:  0.538
 ```
 
+## Evaluation Metrics
+
+| metric | value | meaning |
+| --- | ---: | --- |
+| Precision | 0.740 | How many predicted food boxes were correct |
+| Recall | 0.777 | How many actual food objects were detected |
+| mAP50 | 0.751 | Main detection score at IoU 0.50 |
+| mAP50-95 | 0.538 | Stricter detection score across IoU 0.50 to 0.95 |
+
+Training result plots:
+
+<img src="runs/detect/runs/food-analysis/yolov8-food-2/results.png" alt="YOLO training results" width="650">
+
+Confusion matrix:
+
+<img src="runs/detect/runs/food-analysis/yolov8-food-2/confusion_matrix.png" alt="Confusion matrix" width="650">
+
 Training artifacts are included under:
 
 ```text
@@ -51,12 +137,25 @@ Training command:
 ```bash
 python scripts/train.py \
   --data data/food_detection.yaml \
-  --base-model yolov8s.pt \
+  --base-model models/yolov8s.pt \
   --epochs 100 \
   --imgsz 640 \
   --batch 16 \
   --device 0 \
   --name yolov8-food-2
+```
+
+Fine-tuning steps:
+
+```text
+1. Download Roboflow dataset in YOLO format.
+2. Filter dataset to 10 stronger food classes.
+3. Convert polygon labels to bounding boxes where required.
+4. Remove invalid/tiny boxes.
+5. Create clean YOLO data config.
+6. Load pretrained YOLOv8s checkpoint.
+7. Train for 100 epochs on GPU.
+8. Select best.pt from validation performance.
 ```
 
 ## Dataset
@@ -76,12 +175,6 @@ Dataset preparation:
 python scripts/prepare_filtered_dataset.py --source dataset --output datasets/food_multi_filtered
 ```
 
-Dataset cleaning details are written in:
-
-```text
-DATASET_CLEANING.md
-```
-
 Final training dataset:
 
 ```text
@@ -89,6 +182,15 @@ datasets/food_multi_filtered
 ```
 
 The full training image folders are not included in this zip because the dataset is publicly available from Roboflow and can be recreated using the cleaning script above. The dataset config, cleaning script, class list, counts, and source link are included.
+
+Cleaning steps I used:
+
+- selected only the stronger 10 food classes
+- converted polygon/segmentation labels to YOLO bounding boxes
+- removed classes not used for final training
+- removed invalid boxes and very tiny boxes
+- kept empty-label training images as negative/background examples
+- recreated a clean YOLO `data.yaml`
 
 Dataset summary:
 
@@ -149,6 +251,53 @@ Tested output images and screenshots are kept in:
 
 ```text
 outputs/
+```
+
+## Project Structure
+
+```text
+app.py
+README.md
+requirements.txt
+pyproject.toml
+data/
+  food_detection.yaml
+  nutrition.csv
+datasets/
+  food_multi_filtered/
+    data.yaml
+    train/images/
+    train/labels/
+    valid/images/
+    valid/labels/
+    test/images/
+    test/labels/
+models/
+  yolov8s.pt
+outputs/
+  real_multi_food_sample_annotated.png
+  all_classes_test_annotated.png
+  sample_output.json
+runs/detect/runs/food-analysis/yolov8-food-2/
+  weights/best.pt
+  results.csv
+  results.png
+  confusion_matrix.png
+  confusion_matrix_normalized.png
+  BoxF1_curve.png
+  BoxPR_curve.png
+  BoxP_curve.png
+  BoxR_curve.png
+samples/
+scripts/
+  prepare_filtered_dataset.py
+  train.py
+src/food_analysis/
+  analyzer.py
+  cli.py
+  nutrition.py
+  schemas.py
+  visualization.py
 ```
 
 ## Streamlit App
